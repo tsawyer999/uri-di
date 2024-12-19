@@ -1,16 +1,36 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using StructureMap;
 using UriDi.Console.HttpClients;
+using UriDi.Console.Models;
 using UriDi.Console.Services;
 
 namespace UriDi.Console
 {
     public class Program
     {
+        private static readonly string[] _regions = {
+            "ca",
+            "us",
+            "eu"
+        };
+
         public static void Main()
         {
-            var container = CreateContainer();
-            
+            var configuration = GetConfiguration();
+            var configurations = new Dictionary<string, RegionConfiguration>();
+
+            foreach (var region in _regions)
+            {
+                var regionConfiguration = new RegionConfiguration();
+                configuration.GetSection(region).Bind(regionConfiguration);
+                configurations.Add(region, regionConfiguration);
+            }
+
+            var container = CreateContainer(configurations.First().Value);
             Task.WaitAll(
                 DisplayCustomers(container),
                 DisplayInvoices(container)
@@ -18,15 +38,40 @@ namespace UriDi.Console
             System.Console.WriteLine("PROCESS DONE");
         }
 
-        private static Container CreateContainer()
+        private static IConfigurationRoot GetConfiguration()
         {
-            return new Container(configuration =>
-            {
-                configuration.For<ICustomerHttpClient>().Use<CustomerHttpClient>();
-                configuration.For<IInvoiceHttpClient>().Use<InvoiceHttpClient>();
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-                configuration.For<ICustomersService>().Use<CustomersService>();
-                configuration.For<IInvoicesService>().Use<InvoicesService>();
+            var configuration = builder.Build();
+
+            return configuration;
+        }
+
+        private static Container CreateContainer(RegionConfiguration configuration)
+        {
+            return new Container(containerConfiguration =>
+            {
+                containerConfiguration
+                    .For<ICustomerHttpClient>()
+                    .Use<CustomerHttpClient>()
+                    .Ctor<RegionConfiguration>("configuration")
+                    .Is(configuration);
+                
+                containerConfiguration
+                    .For<IInvoiceHttpClient>()
+                    .Use<InvoiceHttpClient>()
+                    .Ctor<RegionConfiguration>("configuration")
+                    .Is(configuration);
+
+                containerConfiguration
+                    .For<ICustomersService>()
+                    .Use<CustomersService>();
+
+                containerConfiguration
+                    .For<IInvoicesService>()
+                    .Use<InvoicesService>();
             });
         }
         
