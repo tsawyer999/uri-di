@@ -15,7 +15,7 @@ namespace UriDi.Console.HttpClients
 
         public async Task<List<string>> GetInvoicesAsync()
         {
-            System.Console.WriteLine(_configuration.Email.ApiKey);
+            System.Console.WriteLine($"Query from {_configuration.Email.BaseUrl}:");
             return await Task.Run(() =>
             {
                 return new List<string>
