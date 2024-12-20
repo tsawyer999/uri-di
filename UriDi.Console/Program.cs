@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using StructureMap;
@@ -25,12 +24,55 @@ namespace UriDi.Console
         public static async Task Main()
         {
             var configurations = GetConfiguration();
-            var container = CreateContainer(configurations.First().Value);
+            var containers = GetContainers(configurations);
 
-            await QueryCustomers(container, US);
-            await QueryInvoices(container, EU);
+            await QueryCustomers(US, containers[US]);
+            await QueryInvoices(EU, containers[EU]);
             
             System.Console.WriteLine("\n\nPROCESS DONE");
+        }
+
+        private static Dictionary<string, Container> GetContainers(Dictionary<string, RegionConfiguration> configurations)
+        {
+            var containers = new Dictionary<string, Container>();
+
+            foreach (var entry in configurations)
+            {
+                var container = CreateContainer(entry.Key, entry.Value);
+                containers.Add(entry.Key, container);
+            }
+
+            return containers;
+        }
+
+        private static Container CreateContainer(string region, RegionConfiguration configuration)
+        {
+            return new Container(containerConfiguration =>
+            {
+                containerConfiguration
+                    .For<ICustomerHttpClient>()
+                    .Use<CustomerHttpClient>()
+                    .Ctor<RegionConfiguration>("configuration")
+                    .Is(configuration)
+                    .Named(region);
+                
+                containerConfiguration
+                    .For<IInvoiceHttpClient>()
+                    .Use<InvoiceHttpClient>()
+                    .Ctor<RegionConfiguration>("configuration")
+                    .Is(configuration)
+                    .Named(region);
+
+                containerConfiguration
+                    .For<ICustomersService>()
+                    .Use<CustomersService>()
+                    .Named(region);
+
+                containerConfiguration
+                    .For<IInvoicesService>()
+                    .Use<InvoicesService>()
+                    .Named(region);
+            });
         }
 
         private static Dictionary<string, RegionConfiguration> GetConfiguration()
@@ -53,33 +95,7 @@ namespace UriDi.Console
             return configurations;
         }
 
-        private static Container CreateContainer(RegionConfiguration configuration)
-        {
-            return new Container(containerConfiguration =>
-            {
-                containerConfiguration
-                    .For<ICustomerHttpClient>()
-                    .Use<CustomerHttpClient>()
-                    .Ctor<RegionConfiguration>("configuration")
-                    .Is(configuration);
-                
-                containerConfiguration
-                    .For<IInvoiceHttpClient>()
-                    .Use<InvoiceHttpClient>()
-                    .Ctor<RegionConfiguration>("configuration")
-                    .Is(configuration);
-
-                containerConfiguration
-                    .For<ICustomersService>()
-                    .Use<CustomersService>();
-
-                containerConfiguration
-                    .For<IInvoicesService>()
-                    .Use<InvoicesService>();
-            });
-        }
-        
-        private static async Task QueryCustomers(Container container, string region)
+        private static async Task QueryCustomers(string region, Container container)
         {
             System.Console.WriteLine($"\nRequest for region {region}");
 
@@ -92,7 +108,7 @@ namespace UriDi.Console
             }
         }
 
-        private static async Task QueryInvoices(Container container, string region)
+        private static async Task QueryInvoices(string region, Container container)
         {
             System.Console.WriteLine($"\nRequest for region {region}");
 
