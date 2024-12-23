@@ -24,55 +24,52 @@ namespace UriDi.Console
         public static async Task Main()
         {
             var configurations = GetConfiguration();
-            var containers = GetContainers(configurations);
+            var container = GetContainer(configurations);
 
-            await QueryCustomers(US, containers[US]);
-            await QueryInvoices(EU, containers[EU]);
+            await QueryCustomers(container.GetProfile(US));
+            await QueryInvoices(container.GetProfile(EU));
             
             System.Console.WriteLine("\n\nPROCESS DONE");
         }
 
-        private static Dictionary<string, Container> GetContainers(Dictionary<string, RegionConfiguration> configurations)
+        private static IContainer GetContainer(Dictionary<string, RegionConfiguration> configurations)
         {
-            var containers = new Dictionary<string, Container>();
-
+            var registry = new Registry();
             foreach (var entry in configurations)
             {
-                var container = CreateContainer(entry.Key, entry.Value);
-                containers.Add(entry.Key, container);
+                registry.Profile(entry.Key, profile =>
+                {
+                    CreateProfile(profile, entry.Value);
+                });
             }
 
-            return containers;
+            var container = new Container();
+            container.Configure(config => config.AddRegistry(registry));
+            
+            return container;
         }
 
-        private static Container CreateContainer(string region, RegionConfiguration configuration)
+        private static void CreateProfile(IProfileRegistry profile, RegionConfiguration configuration)
         {
-            return new Container(containerConfiguration =>
-            {
-                containerConfiguration
-                    .For<ICustomerHttpClient>()
-                    .Use<CustomerHttpClient>()
-                    .Ctor<RegionConfiguration>("configuration")
-                    .Is(configuration)
-                    .Named(region);
-                
-                containerConfiguration
-                    .For<IInvoiceHttpClient>()
-                    .Use<InvoiceHttpClient>()
-                    .Ctor<RegionConfiguration>("configuration")
-                    .Is(configuration)
-                    .Named(region);
+            profile
+                .For<ICustomerHttpClient>()
+                .Use<CustomerHttpClient>()
+                .Ctor<RegionConfiguration>("configuration")
+                .Is(configuration);
 
-                containerConfiguration
-                    .For<ICustomersService>()
-                    .Use<CustomersService>()
-                    .Named(region);
+            profile
+                .For<IInvoiceHttpClient>()
+                .Use<InvoiceHttpClient>()
+                .Ctor<RegionConfiguration>("configuration")
+                .Is(configuration);
 
-                containerConfiguration
-                    .For<IInvoicesService>()
-                    .Use<InvoicesService>()
-                    .Named(region);
-            });
+            profile
+                .For<ICustomersService>()
+                .Use<CustomersService>();
+
+            profile
+                .For<IInvoicesService>()
+                .Use<InvoicesService>();
         }
 
         private static Dictionary<string, RegionConfiguration> GetConfiguration()
@@ -95,10 +92,8 @@ namespace UriDi.Console
             return configurations;
         }
 
-        private static async Task QueryCustomers(string region, Container container)
+        private static async Task QueryCustomers(IContainer container)
         {
-            System.Console.WriteLine($"\nRequest for region {region}");
-
             var customersService = container.GetInstance<ICustomersService>();
             var customers = await customersService.GetOddCustomersAsync();
 
@@ -108,10 +103,8 @@ namespace UriDi.Console
             }
         }
 
-        private static async Task QueryInvoices(string region, Container container)
+        private static async Task QueryInvoices(IContainer container)
         {
-            System.Console.WriteLine($"\nRequest for region {region}");
-
             var invoicesService = container.GetInstance<IInvoicesService>();
             var invoices = await invoicesService.GetEvenInvoicesAsync();
             
