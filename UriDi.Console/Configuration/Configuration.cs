@@ -3,7 +3,7 @@ using System.IO;
 using Microsoft.Extensions.Configuration;
 using UriDi.Models.Configuration;
 
-namespace UriDi.Console
+namespace UriDi.Console.Configuration
 {
     public class Configuration
     {

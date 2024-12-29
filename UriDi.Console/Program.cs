@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using UriDi.Console.Configuration;
 using UriDi.Console.Controllers;
 using UriDi.Models.Configuration;
 
@@ -8,7 +9,7 @@ namespace UriDi.Console
     {
         public static async Task Main()
         {
-            var configurations = Configuration.GetConfiguration();
+            var configurations = Configuration.Configuration.GetConfiguration();
             var container = ApplicationRegistry.GetContainer(configurations);
 
             var customersController = new CustomersController(container);

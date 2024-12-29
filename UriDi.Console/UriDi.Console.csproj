@@ -97,8 +97,9 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="ApplicationRegistry.cs" />
-        <Compile Include="Configuration.cs" />
+        <Compile Include="Configuration\ApplicationRegistry.cs" />
+        <Compile Include="Configuration\Configuration.cs" />
+        <Compile Include="Configuration\RegionRegistry.cs" />
         <Compile Include="Controllers\CustomersController.cs" />
         <Compile Include="Controllers\InvoicesController.cs" />
         <Compile Include="Program.cs"/>
