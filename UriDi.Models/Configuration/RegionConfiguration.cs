@@ -1,4 +1,4 @@
-namespace UriDi.Console.Models
+namespace UriDi.Models.Configuration
 {
     public class RegionConfiguration
     {

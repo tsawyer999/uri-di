@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UriDi.Console.HttpClients;
+using UriDi.Infrastructure.HttpClients;
 
-namespace UriDi.Console.Services
+namespace UriDi.Domain.Services
 {
     public class CustomersService : ICustomersService
     {

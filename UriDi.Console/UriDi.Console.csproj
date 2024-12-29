@@ -97,18 +97,8 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="HttpClients\CustomerHttpClient.cs" />
-        <Compile Include="HttpClients\ICustomerHttpClient.cs" />
-        <Compile Include="HttpClients\IInvoiceHttpClient.cs" />
-        <Compile Include="HttpClients\InvoiceHttpClient.cs" />
-        <Compile Include="Models\PartnerConfiguration.cs" />
-        <Compile Include="Models\RegionConfiguration.cs" />
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
-        <Compile Include="Services\CustomersService.cs" />
-        <Compile Include="Services\ICustomersService.cs" />
-        <Compile Include="Services\IInvoicesService.cs" />
-        <Compile Include="Services\InvoicesService.cs" />
     </ItemGroup>
     <ItemGroup>
       <Content Include="appsettings.json">
@@ -117,6 +107,20 @@
     </ItemGroup>
     <ItemGroup>
       <None Include="packages.config" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\UriDi.Domain\UriDi.Domain.csproj">
+        <Project>{ad4f1f4b-ab92-4132-90bb-b3b14fd681e7}</Project>
+        <Name>UriDi.Domain</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\UriDi.Infrastructure\UriDi.Infrastructure.csproj">
+        <Project>{31d46291-5238-4c16-ac0a-869052f79e8a}</Project>
+        <Name>UriDi.Infrastructure</Name>
+      </ProjectReference>
+      <ProjectReference Include="..\UriDi.Models\UriDi.Models.csproj">
+        <Project>{c884dd93-5f04-4383-94c0-a4667c0b805e}</Project>
+        <Name>UriDi.Models</Name>
+      </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

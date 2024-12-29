@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace UriDi.Console.Services
+namespace UriDi.Domain.Services
 {
     public interface ICustomersService
     {

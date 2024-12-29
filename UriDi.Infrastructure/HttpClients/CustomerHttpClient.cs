@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UriDi.Console.Models;
+using UriDi.Models.Configuration;
 
-namespace UriDi.Console.HttpClients
+namespace UriDi.Infrastructure.HttpClients
 {
     public class CustomerHttpClient : ICustomerHttpClient
     {

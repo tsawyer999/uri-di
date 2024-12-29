@@ -3,31 +3,21 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using StructureMap;
-using UriDi.Console.HttpClients;
-using UriDi.Console.Models;
-using UriDi.Console.Services;
+using UriDi.Domain.Services;
+using UriDi.Infrastructure.HttpClients;
+using UriDi.Models.Configuration;
 
 namespace UriDi.Console
 {
     public class Program
     {
-        private const string CA = "ca";
-        private const string US = "us";
-        private const string EU = "eu";
-        
-        private static readonly string[] Regions = {
-            CA,
-            US,
-            EU
-        };
-
         public static async Task Main()
         {
             var configurations = GetConfiguration();
             var container = GetContainer(configurations);
 
-            await QueryCustomers(container.GetProfile(US));
-            await QueryInvoices(container.GetProfile(EU));
+            await QueryCustomers(container.GetProfile(Region.US));
+            await QueryInvoices(container.GetProfile(Region.EU));
             
             System.Console.WriteLine("\n\nPROCESS DONE");
         }
@@ -82,7 +72,7 @@ namespace UriDi.Console
             
             var configurations = new Dictionary<string, RegionConfiguration>();
 
-            foreach (var region in Regions)
+            foreach (var region in Region.All)
             {
                 var regionConfiguration = new RegionConfiguration();
                 configuration.GetSection(region).Bind(regionConfiguration);
