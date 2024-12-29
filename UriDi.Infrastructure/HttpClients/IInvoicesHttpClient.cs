@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace UriDi.Infrastructure.HttpClients
 {
-    public interface IInvoiceHttpClient
+    public interface IInvoicesHttpClient
     {
         Task<List<string>> GetInvoicesAsync();
     }

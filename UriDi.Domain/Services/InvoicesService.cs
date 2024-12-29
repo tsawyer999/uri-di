@@ -8,16 +8,16 @@ namespace UriDi.Domain.Services
 {
     public class InvoicesService : IInvoicesService
     {
-        private readonly IInvoiceHttpClient _invoiceHttpClient;
+        private readonly IInvoicesHttpClient _invoicesHttpClient;
 
-        public InvoicesService(IInvoiceHttpClient invoiceHttpClient)
+        public InvoicesService(IInvoicesHttpClient invoicesHttpClient)
         {
-            _invoiceHttpClient = invoiceHttpClient;
+            _invoicesHttpClient = invoicesHttpClient;
         }
         
         public async Task<List<string>> GetEvenInvoicesAsync()
         {
-            var invoices = await _invoiceHttpClient.GetInvoicesAsync();
+            var invoices = await _invoicesHttpClient.GetInvoicesAsync();
 
             var prefixLength = "INVOICE".Length;
 

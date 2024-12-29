@@ -4,11 +4,11 @@ using UriDi.Models.Configuration;
 
 namespace UriDi.Infrastructure.HttpClients
 {
-    public class CustomerHttpClient : ICustomerHttpClient
+    public class CustomersesHttpClient : ICustomersHttpClient
     {
         private readonly RegionConfiguration _configuration;
 
-        public CustomerHttpClient(RegionConfiguration configuration)
+        public CustomersesHttpClient(RegionConfiguration configuration)
         {
             _configuration = configuration;
         }

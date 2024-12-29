@@ -39,10 +39,10 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="HttpClients\CustomerHttpClient.cs" />
-        <Compile Include="HttpClients\ICustomerHttpClient.cs" />
-        <Compile Include="HttpClients\IInvoiceHttpClient.cs" />
-        <Compile Include="HttpClients\InvoiceHttpClient.cs" />
+        <Compile Include="HttpClients\CustomersesHttpClient.cs" />
+        <Compile Include="HttpClients\ICustomersHttpClient.cs" />
+        <Compile Include="HttpClients\IInvoicesHttpClient.cs" />
+        <Compile Include="HttpClients\InvoicesHttpClient.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <ItemGroup>

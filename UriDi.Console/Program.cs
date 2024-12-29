@@ -42,14 +42,14 @@ namespace UriDi.Console
         private static void CreateProfile(IProfileRegistry profile, RegionConfiguration configuration)
         {
             profile
-                .For<ICustomerHttpClient>()
-                .Use<CustomerHttpClient>()
+                .For<ICustomersHttpClient>()
+                .Use<CustomersesHttpClient>()
                 .Ctor<RegionConfiguration>("configuration")
                 .Is(configuration);
 
             profile
-                .For<IInvoiceHttpClient>()
-                .Use<InvoiceHttpClient>()
+                .For<IInvoicesHttpClient>()
+                .Use<InvoicesHttpClient>()
                 .Ctor<RegionConfiguration>("configuration")
                 .Is(configuration);
 

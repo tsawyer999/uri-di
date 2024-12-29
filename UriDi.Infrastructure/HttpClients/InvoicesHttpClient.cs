@@ -4,19 +4,19 @@ using UriDi.Models.Configuration;
 
 namespace UriDi.Infrastructure.HttpClients
 {
-    public class InvoiceHttpClient : IInvoiceHttpClient
+    public class InvoicesHttpClient : IInvoicesHttpClient
     {
         private readonly RegionConfiguration _configuration;
 
-        public InvoiceHttpClient(RegionConfiguration configuration)
+        public InvoicesHttpClient(RegionConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public async Task<List<string>> GetInvoicesAsync()
+        public Task<List<string>> GetInvoicesAsync()
         {
             System.Console.WriteLine($"Query from {_configuration.Email.BaseUrl}:");
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
                 return new List<string>
                 {

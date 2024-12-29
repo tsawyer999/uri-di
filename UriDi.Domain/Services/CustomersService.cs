@@ -8,16 +8,16 @@ namespace UriDi.Domain.Services
 {
     public class CustomersService : ICustomersService
     {
-        private readonly ICustomerHttpClient _customerHttpClient;
+        private readonly ICustomersHttpClient _customersHttpClient;
 
-        public CustomersService(ICustomerHttpClient customerHttpClient)
+        public CustomersService(ICustomersHttpClient customersHttpClient)
         {
-            _customerHttpClient = customerHttpClient;
+            _customersHttpClient = customersHttpClient;
         }
         
         public async Task<List<string>> GetOddCustomersAsync()
         {
-            var customers = await _customerHttpClient.GetCustomersAsync();
+            var customers = await _customersHttpClient.GetCustomersAsync();
 
             var prefixLength = "CUSTOMER".Length;
 
