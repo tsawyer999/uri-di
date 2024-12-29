@@ -6,9 +6,16 @@ namespace UriDi.Console.Controllers
 {
     public class CustomersController
     {
-        public async Task GetCustomers(IContainer container)
+        private readonly IContainer _container;
+
+        public CustomersController(IContainer container)
         {
-            var customersService = container.GetInstance<ICustomersService>();
+            _container = container;
+        }
+        
+        public async Task GetCustomers(string region)
+        {
+            var customersService = _container.GetInstance<ICustomersService>(region);
             var customers = await customersService.GetOddCustomersAsync();
 
             foreach (var customer in customers)

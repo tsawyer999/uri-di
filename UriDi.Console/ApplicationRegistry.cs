@@ -10,41 +10,42 @@ namespace UriDi.Console
     {
         public static IContainer GetContainer(Dictionary<string, RegionConfiguration> configurations)
         {
-            var registry = new Registry();
+            var container = new Container();
             foreach (var entry in configurations)
             {
-                registry.Profile(entry.Key, profile => { CreateProfile(profile, entry.Value); });
-            }
+                container.Configure(configure =>
+                {
+                    configure
+                        .For<ICustomersHttpClient>()
+                        .Use<CustomersesHttpClient>()
+                        .Ctor<RegionConfiguration>("configuration")
+                        .Is(entry.Value)
+                        .Named(entry.Key);
 
-            var container = new Container();
-            container.Configure(config => config.AddRegistry(registry));
+                    configure
+                        .For<IInvoicesHttpClient>()
+                        .Use<InvoicesHttpClient>()
+                        .Ctor<RegionConfiguration>("configuration")
+                        .Is(entry.Value)
+                        .Named(entry.Key);
+
+                    configure
+                        .For<ICustomersService>()
+                        .Use<CustomersService>()
+                        .Ctor<ICustomersHttpClient>()
+                        .Is(c => c.GetInstance<ICustomersHttpClient>(entry.Key))
+                        .Named(entry.Key);
+
+                    configure
+                        .For<IInvoicesService>()
+                        .Use<InvoicesService>()
+                        .Ctor<IInvoicesHttpClient>()
+                        .Is(c => c.GetInstance<IInvoicesHttpClient>(entry.Key))
+                        .Named(entry.Key);
+                });
+            }
 
             return container;
         }
-
-        private static void CreateProfile(IProfileRegistry profile, RegionConfiguration configuration)
-        {
-            profile
-                .For<ICustomersHttpClient>()
-                .Use<CustomersesHttpClient>()
-                .Ctor<RegionConfiguration>("configuration")
-                .Is(configuration);
-
-            profile
-                .For<IInvoicesHttpClient>()
-                .Use<InvoicesHttpClient>()
-                .Ctor<RegionConfiguration>("configuration")
-                .Is(configuration);
-
-            profile
-                .For<ICustomersService>()
-                .Use<CustomersService>();
-
-            profile
-                .For<IInvoicesService>()
-                .Use<InvoicesService>();
-        }
-
-
     }
 }

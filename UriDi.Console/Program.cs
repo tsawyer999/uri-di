@@ -11,11 +11,11 @@ namespace UriDi.Console
             var configurations = Configuration.GetConfiguration();
             var container = ApplicationRegistry.GetContainer(configurations);
 
-            var customersController = new CustomersController();
-            await customersController.GetCustomers(container.GetProfile(Region.US));
+            var customersController = new CustomersController(container);
+            await customersController.GetCustomers(Region.US);
             
-            var invoicesController = new InvoicesController();
-            await invoicesController.GetInvoices(container.GetProfile(Region.EU));
+            var invoicesController = new InvoicesController(container);
+            await invoicesController.GetInvoices(Region.EU);
             
             System.Console.WriteLine("\n\nPROCESS DONE");
         }
